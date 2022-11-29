@@ -3,13 +3,19 @@ const express = require('express');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+app.use(express.json());
+
 const uri = process.env.MONGO_CONNECTION_STRING;
 const client = new MongoClient(uri);
 
 app.get('/users', async (req, res) => {
-	let item = await client.db('sample_mflix').collection('users').find();
+	let item = await client
+		.db('sample_mflix')
+		.collection('users')
+		.find()
+		.toArray();
 
-	return res.json(item);
+	res.send(item);
 });
 
 client.connect(err => {
