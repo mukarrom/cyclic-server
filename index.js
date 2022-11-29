@@ -1,29 +1,24 @@
+const { MongoClient } = require('mongodb');
 const express = require('express');
-const { MongoClient, ServerApiVersion } = require('mongodb');
-require('dotenv').config();
 const app = express();
-const port = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3000;
 
 const uri = process.env.MONGO_CONNECTION_STRING;
-const client = new MongoClient(uri, {
-	useNewUrlParser: true,
-	useUnifiedTopology: true,
-	serverApi: ServerApiVersion.v1,
+const client = new MongoClient(uri);
+
+app.get('/users', async (req, res) => {
+	let item = await client.db('sample_mflix').collection('users').find();
+
+	return res.json(item);
 });
 
-async function run() {
-	try {
-		await client.connect();
-		const commentCollection = client.db('sample_mflix').collection('comments');
-
-		app.get('/comments', async (req, res) => {
-			const result = await commentCollection.find().toArray();
-			res.send(result);
-		});
-	} finally {
+client.connect(err => {
+	if (err) {
+		console.error(err);
+		return false;
 	}
-}
-run().catch(console.dir);
-app.get('/', (req, res) => res.type('html').send('hello'));
-
-app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+	// connection to mongo is successful, listen for requests
+	app.listen(PORT, () => {
+		console.log('listening for requests');
+	});
+});
