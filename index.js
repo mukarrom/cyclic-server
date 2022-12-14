@@ -6,6 +6,7 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 
+// connect to mongodb
 const uri = process.env.MONGO_CONNECTION_STRING;
 const client = new MongoClient(uri);
 
