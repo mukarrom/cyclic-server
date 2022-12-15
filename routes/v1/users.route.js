@@ -50,6 +50,6 @@ router
 	// verify admin
 	.get(verifyJWT, usersController.checkAdmin)
 	// make an admin
-	.put(verifyJWT, verifyAdmin, usersController.makeAdmin);
+	.put(verifyJWT, verifyAdmin, usersController.handleAdmin);
 
 module.exports = router;

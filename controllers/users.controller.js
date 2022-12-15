@@ -21,22 +21,45 @@ module.exports.saveAUser = async (req, res, next) => {
 			.collection('users')
 			.updateOne({ email: email }, { $set: user }, { upsert: true });
 		const token = jwt.sign({ email: email }, process.env.ACCESS_TOKEN_SECRET, {
-			expiresIn: '12h',
+			expiresIn: '24h',
 		});
 		res.send({ result, token });
 	} catch (error) {
 		next(error);
 	}
 };
-// make an admin
-module.exports.makeAdmin = async (req, res, next) => {
+// // make an admin
+// module.exports.makeAdmin = async (req, res, next) => {
+// 	try {
+// 		const db = getAsmatDb();
+// 		const email = req.params.email;
+// 		const result = await db
+// 			.collection('users')
+// 			.updateOne({ email: email }, { $set: { role: 'admin' } });
+// 		res.send({ result });
+// 	} catch (error) {
+// 		next(error);
+// 	}
+// };
+
+// make and remove admin
+module.exports.handleAdmin = async (req, res, next) => {
 	try {
 		const db = getAsmatDb();
 		const email = req.params.email;
-		const result = await db
-			.collection('users')
-			.updateOne({ email: email }, { $set: { role: 'admin' } });
-		res.send({ result });
+		const action = req.headers.action;
+		if (action === 'make_admin') {
+			const result = await db
+				.collection('users')
+				.updateOne({ email: email }, { $set: { role: 'admin' } });
+			res.send({ result });
+		}
+		if (action === 'remove_admin') {
+			const result = await db
+				.collection('users')
+				.updateOne({ email: email }, { $set: { role: '' } });
+			res.send({ result });
+		}
 	} catch (error) {
 		next(error);
 	}
