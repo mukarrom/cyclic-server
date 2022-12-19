@@ -1,7 +1,7 @@
 const { ObjectId } = require('mongodb');
 const { getAsmatDb } = require('../utils/dbConnect');
 
-// get all Datas
+// get all Datas last to fast
 module.exports.getAllData = async (req, res, next) => {
 	try {
 		const db = getAsmatDb();
@@ -96,6 +96,30 @@ module.exports.getLastData = async (req, res, next) => {
 		const result = await db
 			.collection(dbCollectionName)
 			.find({}, { sort: { $natural: -1 }, limit: 1 })
+			.toArray();
+		res.send(result);
+	} catch (error) {
+		next(error);
+	}
+};
+
+/*
+========================> this is version 2 <============================
+*/
+
+// get all Data filtered by position
+module.exports.getAllBodyF2L = async (req, res, next) => {
+	try {
+		const db = getAsmatDb();
+		const dbCollectionName = req.headers.dynamic;
+		const result = await db
+			.collection(dbCollectionName)
+			.find()
+			.sort({ position: 1 })
+			.collation({
+				locale: 'en_US',
+				numericOrdering: true,
+			})
 			.toArray();
 		res.send(result);
 	} catch (error) {

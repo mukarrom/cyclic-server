@@ -14,6 +14,8 @@ const noticeRoutes = require('./routes/v1/notice.route');
 // const dynamicRoutes = require('./routes/v1/dynamic.route');
 const { connectToServer } = require('./utils/dbConnect');
 const dynamicRoutes = require('./routes/v1/dynamic.route');
+const dynamicRoutesv2 = require('./routes/v2/dynamic.route');
+const govBodyRouteV2 = require('./routes/v2/gov_body.route');
 
 app.use(cors());
 app.use(express.json());
@@ -44,6 +46,8 @@ app.use('/api/v1/blogs', blogsRoutes);
 app.use('/api/v1/events', eventsRoutes);
 app.use('/api/v1/articles', articlesRoutes);
 app.use('/api/v1/dynamic', dynamicRoutes);
+app.use('/api/v2/dynamic', dynamicRoutesv2);
+app.use('/api/v2/body', govBodyRouteV2);
 
 app.get('/', (req, res) => {
 	res.send('home');
